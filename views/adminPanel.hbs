@@ -1,0 +1,329 @@
+<input type="text" id="citiesLen" value="{{citiesLength}}" style="display:none;">
+<input type="text" id="categoriesLen" value="{{categoriesLength}}" style="display:none;">
+<input type="text" id="productsLen" value="{{productsLength}}" style="display:none;">
+
+
+<main>
+
+    {{!-- <button style="margin-bottom: 15px;" id="openCitiesPanel">Города</button> --}}
+    <div class="table-container">
+        <div class="table-header"><button id="openCitiesPanel" class="openPanelsBtns"><h2>Управление городами:</h2></button></div>
+        <div id="citiesPanel" class="panel">
+            <div class="div-btn" id="changeBtnCities">Изменить</div>
+            <div class="table" id="changeFormCities">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Категории
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                {{#each cities}}
+                    <form action="/admin/changeCity" enctype="multipart/form-data" method="post" class="table-row">
+                        <div class="table-column"><input type="text" name="cityName" id="cityNameChange{{this.i}}" value="{{this.name}}" required></div>
+                        <div class="table-column" style="display:none;"><input type="text" name="cityData" id="cityDataChange{{this.i}}" value="{{this.data}}"></div>
+                        <div class="table-column">
+                            <select name="categories" id="change-city-categories-select{{this.i}}" multiple size="2" required>
+                                {{#each this.categories}}
+                                    <option value="{{this.data}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        {{!-- <div class="table-column"><input type="submit" value="Изменить"></div> --}}
+                        <div class="table-column"><button type="button" id="changeCitySubmit{{this.i}}">Изменить</button></div>
+                    </form>
+                {{/each}}
+            </div>
+            <div class="table-hr"></div>
+
+            <div class="div-btn" id="deleteBtnCities">Удалить</div>
+            <div class="table" id="deleteFormCities">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                {{#each cities}}
+                    <form action="/admin/deleteCity" enctype="multipart/form-data" method="post" class="table-row">
+                        <div class="table-column"><input type="text" name="cityName" id="cityNameDel{{this.i}}" value="{{this.name}}" disabled="disabled"></div>
+                        <div class="table-column" style="display:none;"><input type="text" name="cityData" id="cityDataDel{{this.i}}" value="{{this.data}}"></div>
+                        {{!-- <div class="table-column"><input type="submit" value="Удалить"></div> --}}
+                        <div class="table-column"><button type="button" id="deleteCitySubmit{{this.i}}">Удалить</button></div>
+                    </form>
+                {{/each}}
+            </div>
+            <div class="table-hr"></div>
+
+            <div class="div-btn" id="addBtnCities">Добавить</div>
+            <div action="/admin/addCity" enctype="multipart/form-data" method="post" class="table" id="addFormCities">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Категории
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                <form class="table-row">
+                    <div class="table-column"><input type="text" name="addName" id="cityNameAdd" value="" required></div>
+                    <div class="table-column">
+                        <select name="categories" id="add-city-categories-select" multiple size="2" required>
+                            {{#each categories}}
+                                <option value="{{this.data}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    {{!-- <div class="table-column"><input type="submit" value="Удалить"></div> --}}
+                    <div class="table-column"><button type="button" id="addCitySubmit">Добавить</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{!-- <button style="margin-bottom: 15px;">Категории</button> --}}
+    <div class="table-container">
+        <div class="table-header"><button id="openCategoriesPanel" class="openPanelsBtns"><h2>Управление категориями:</h2></button></div>
+        <div id="categoriesPanel" class="panel">
+            <div class="div-btn" id="changeBtnCategories">Изменить</div>
+            <div class="table" id="changeFormCategories">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Товары
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                {{#each categories}}
+                    <form action="/admin/changeCategory" enctype="multipart/form-data" method="post" class="table-row">
+                        <div class="table-column"><input type="text" name="categoryName" id="categoryNameChange{{this.i}}" value="{{this.name}}" required></div>
+                        <div class="table-column" style="display:none;"><input type="text" name="categoryData" id="categoryDataChange{{this.i}}" value="{{this.data}}"></div>
+                        <div class="table-column">
+                            <select name="products" id="change-category-products-select{{this.i}}" multiple size="2" required>
+                                {{#each this.products}}
+                                    <option value="{{this.data}}">{{this.name}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        {{!-- <div class="table-column"><input type="submit" value="Изменить"></div> --}}
+                        <div class="table-column"><button type="button" id="changeCategorySubmit{{this.i}}">Изменить</button></div>
+                    </form>
+                {{/each}}
+            </div>
+            <div class="table-hr"></div>
+
+            <div class="div-btn" id="deleteBtnCategories">Удалить</div>
+            <div class="table" id="deleteFormCategories">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                {{#each categories}}
+                    <form action="/admin/deleteCategory" enctype="multipart/form-data" method="post" class="table-row">
+                        <div class="table-column"><input type="text" name="categoryName" id="categoryNameDel{{this.i}}" value="{{this.name}}" disabled="disabled"></div>
+                        <div class="table-column" style="display:none;"><input type="text" name="cityData" id="categoryDataDel{{this.i}}" value="{{this.data}}"></div>
+                        {{!-- <div class="table-column"><input type="submit" value="Удалить"></div> --}}
+                        <div class="table-column"><button type="button" id="deleteCategorySubmit{{this.i}}">Удалить</button></div>
+                    </form>
+                {{/each}}
+            </div>
+            <div class="table-hr"></div>
+
+            <div class="div-btn" id="addBtnCategories">Добавить</div>
+            <div class="table" id="addFormCategories">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Товары
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                <form class="table-row">
+                    <div class="table-column"><input type="text" name="addName" id="categoryNameAdd" value="" required></div>
+                    <div class="table-column">
+                        <select name="products" id="add-category-products-select" multiple size="2" required>
+                            {{#each products}}
+                                <option value="{{this.data}}">{{this.name}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    {{!-- <div class="table-column"><input type="submit" value="Удалить"></div> --}}
+                    <div class="table-column"><button type="button" id="addCategorySubmit">Добавить</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {{!-- <button style="margin-bottom: 15px;" id="openProductsPanel">Товары</button> --}}
+    <div class="table-container">
+        <div class="table-header"><button id="openProductsPanel" class="openPanelsBtns"><h2>Управление товарами:</h2></button></div>
+        <div id="productsPanel" class="panel">
+            <div style="display: none;" class="div-btn" id="changeBtnProducts">Изменить</div>
+            <div style="display: none;" class="table" id="changeFormProducts">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Цена за 1г
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                {{#each products}}
+                    <form action="/admin/changeProduct" enctype="multipart/form-data" method="post" class="table-row">
+                        <div class="table-column"><input type="text" name="productName" id="productNameChange{{this.i}}" value="{{this.name}}" required></div>
+                        <div class="table-column" style="display:none;"><input type="text" name="productData" id="productDataChange{{this.i}}" value="{{this.data}}"></div>
+                        <div class="table-column"><input type="text" name="productPrice" id="productPriceChange{{this.i}}" value="{{this.price}}" required></div>
+                        {{!-- <div class="table-column"><input type="submit" value="Изменить"></div> --}}
+                        <div class="table-column"><button type="button" id="changeProductSubmit{{this.i}}">Изменить</button></div>
+                    </form>
+                {{/each}}
+            </div>
+            <div class="table-hr"></div>
+
+            <div class="div-btn" id="deleteBtnProducts">Удалить</div>
+            <div class="table" id="deleteFormProducts">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                {{#each products}}
+                    <form action="/admin/deleteProduct" enctype="multipart/form-data" method="post" class="table-row">
+                        <div class="table-column"><input type="text" name="productName" id="productNameDel{{this.i}}" value="{{this.name}}" disabled="disabled"></div>
+                        <div class="table-column" style="display:none;"><input type="text" name="productData" id="productDataDel{{this.i}}" value="{{this.data}}"></div>
+                        {{!-- <div class="table-column"><input type="submit" value="Удалить"></div> --}}
+                        <div class="table-column"><button type="button" id="deleteProductSubmit{{this.i}}">Удалить</button></div>
+                    </form>
+                {{/each}}
+            </div>
+            <div class="table-hr"></div>
+
+            <div class="div-btn" id="addBtnProducts">Добавить</div>
+            <div class="table" id="addFormProducts">
+                <div class="table-row">
+                    <div class="table-column">
+                        Название
+                    </div>
+                    <div class="table-column">
+                        Цена
+                    </div>
+                    <div class="table-column">
+                        Действие
+                    </div>
+                </div>
+                <form class="table-row">
+                    <div class="table-column"><input type="text" name="addName" id="productNameAdd" value="" required></div>
+
+                    
+                    <div class="table-column">
+
+                        <h4>0.25</h4>
+                        <input type="text" name="addPrice1" id="productPriceAdd1" value="">
+                        <br>
+                        <h4>0.3</h4>
+                        <input type="text" name="addPrice2" id="productPriceAdd2" value="">
+                        <br>
+                        <h4>0.5</h4>
+                        <input type="text" name="addPrice3" id="productPriceAdd3" value="">
+                        <br>
+                        <h4>1</h4>
+                        <input type="text" name="addPrice4" id="productPriceAdd4" value="">
+                        <br>
+                        <h4>1.5</h4>
+                        <input type="text" name="addPrice5" id="productPriceAdd5" value="">
+                        <br>
+                        <h4>2</h4>
+                        <input type="text" name="addPrice6" id="productPriceAdd6" value="">
+                        <br>
+                        <h4>5</h4>
+                        <input type="text" name="addPrice7" id="productPriceAdd7" value="">
+                        <br>
+                        <h4>10</h4>
+                        <input type="text" name="addPrice8" id="productPriceAdd8" value="">
+                    
+                    </div>
+
+                    {{!-- <div class="table-column"><input type="submit" value="Удалить"></div> --}}
+                    <div class="table-column"><button type="button" id="addProductSubmit">Добавить</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <div class="table-header"><button id="openPhotosPanel" class="openPanelsBtns"><h2>Загрузка закладок:</h2></button></div>
+        <div id="photosPanel" class="panel">
+            <form class="treasureForm" action="/admin/uploads" enctype="multipart/form-data" method="post">
+                <h3>Город:</h3>
+                <select name="place" id="placeSelect" required>
+                    {{#each cities}}
+                        <option value="{{this.data}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+                <h3>Кол-во в г:</h3>
+                {{#each productsPrices}}
+                    <select name="amount{{this.data}}" id="amountSelect{{this.data}}" class="amountSelect" required>
+                        {{#each this.prices}}
+                            <option value="{{this.amount}}">{{this.amount}}г</option>
+                        {{/each}}
+                    </select>
+                {{/each}}
+                {{!-- <select name="amount" id="amountSelect">
+                    <option value="0.5">0.5г</option>
+                    <option value="1">1г</option>
+                    <option value="2">2г</option>
+                    <option value="3">3г</option>
+                    <option value="4">4г</option>
+                    <option value="5">5г</option>
+                </select> --}}
+                <h3>Продукт: </h3>
+                {{#each productsInCities}}
+                    <select name="product{{this.data}}" id="{{this.data}}Select" class="productSelect" required>
+                        {{#each this.products}}
+                            <option class="productSelectOptions" value="{{this.data}}">{{this.name}}</option>
+                        {{/each}}
+                    </select>
+                {{/each}}
+                <h3>Закладчик</h3>
+                <select name="kladmans" id="kladmansSelect" required>
+                    {{#each kladmans}}
+                        <option value="{{this.id}}">{{this.name}}</option>
+                    {{/each}}
+                </select>
+                <h3>Отправьте фотографии клада:</h3>
+                <input type="file" name="treasurePhotos" multiple required>
+                <h3>Доп. информация:</h3>
+                <textarea name="additionalDescription" cols="40" wrap="hard" required></textarea>
+                <input type="submit" id="button" value="Отправить">
+            </form>
+        </div>
+    </div>
+</main>
+
