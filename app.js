@@ -485,7 +485,7 @@ app.post("/admin/uploads", async (req, res) => {
 });
 
 
-app.listen(80, (err) => {
+app.listen(8080, (err) => {
     if(err) console.log(err.messsage);
     else console.log("Server started! On port: 8181");
 });

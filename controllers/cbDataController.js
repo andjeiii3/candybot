@@ -402,14 +402,30 @@ cbDataController.buy = async (msg, bot, action) => {
                 `Цена: ${productPrice} руб\n\n`+
                 `На вашем счету не хватило денег, баланс - ${Math.round(user.balance)} руб`;
                 
-                const botMsg = await bot.sendMessage(chatId, `➡️Заявка на оплату.\nПереведите на банковскую  карту ${productPrice} рублей удобным для вас способом. \nВажно пополнить ровную сумму.\n`+
-                `Номер карты - 2200700763972634\n‼️ у вас есть 30 мин на оплату, после чего платёж не будет зачислен\n‼️ перевёл неточную сумму - оплатил чужой заказ`, {
+                // const botMsg = await bot.sendMessage(chatId, `➡️Заявка на оплату.\nПереведите на банковскую  карту ${productPrice} рублей удобным для вас способом. \nВажно пополнить ровную сумму.\n`+
+                // `Номер карты - 2200700763972634\n‼️ у вас есть 30 мин на оплату, после чего платёж не будет зачислен\n‼️ перевёл неточную сумму - оплатил чужой заказ`, {
+                //     reply_markup: JSON.stringify({
+                //         inline_keyboard: [
+                //             [ {text: "Оплатил", callback_data: "checkForProdPay|"+chatId+"|"+productPrice+"|"+action[0]+"|"+action[2]+"|"+action[4]} ]
+                //         ]
+                //     })
+                // });
+                let cardNumber = fs.readFileSync("./cardNumber.txt");
+                cardNumber = cardNumber.toString();
+                const botMsg = await bot.sendMessage(chatId, `✅ Заявка принята на оплату.\n\nПереведите на банковскую  карту ${productPrice} рублей удобным для вас способом\n\n❗️ Важно пополнить ровную сумму ❗️\n`+
+                `\n${cardNumber}\n\n❗️ У вас есть 30 мин на оплату, после чего платёж не будет зачислен ❗️\n\n⚠️ Перевёл неточную сумму - оплатил чужой заказ ⚠️`, {
                     reply_markup: JSON.stringify({
                         inline_keyboard: [
                             [ {text: "Оплатил", callback_data: "checkForProdPay|"+chatId+"|"+productPrice+"|"+action[0]+"|"+action[2]+"|"+action[4]} ]
-                        ]
+                        ] 
                     })
                 });
+                bot.sendMessage(chatId, `❗️ ВЫДАННЫЕ РЕКВИЗИТЫ ДЕЙСТВУЮТ 30 МИНУТ\n`+
+                `❗️ ПЕРЕВОДИТЕ ТОЧНУЮ СУММУ. НЕВЕРНАЯ СУММА НЕ БУДЕТ ЗАЧИСЛЕНА\n`+
+                `❗️ ОПЛАТА ДОЛЖНА ПРОХОДИТЬ ОДНИМ ПЛАТЕЖОМ\n`+
+                `❗️ ПРОБЛЕМЫ С ОПЛАТОЙ? ПЕРЕЙДИТЕ ПО ССЫЛКЕ : Payment(http://t.me/Polligato)\n`+
+                `Предоставить чек об оплате и ID: ${chatId}\n`+
+                `❗️ С ПРОБЛЕМНОЙ ЗАЯВКОЙ ОБРАЩАЙТЕСЬ НЕ ПОЗДНЕЕ 24 ЧАСОВ С МОМЕНТА ОПЛАТЫ`);
 
                 async function cancelMsg() {
                     await Account.updateOne( {tgId: chatId}, {$set: {isWaitForPay: "false"}} );

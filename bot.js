@@ -25,8 +25,8 @@ const bot = new TelegramBot(
 );
 
 const botChecker = new TelegramBot(
-    "6224189211:AAGLhHrLe3ncWvL8BCfMi75DSUFW_hv0SZw",
-    // "6116156409:AAGzqE38pLdprivSzC0NN3wGFyWvMt2FEEU",
+    // "6224189211:AAGLhHrLe3ncWvL8BCfMi75DSUFW_hv0SZw",
+    "6116156409:AAGzqE38pLdprivSzC0NN3wGFyWvMt2FEEU",
     { polling: true }
 );
 
@@ -39,6 +39,45 @@ function getEmojis() {
 }
 const game = {};
 let payments = [];
+
+
+
+
+
+bot.onText(/\/addCardAdmin (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    let query = match[1];
+    const admins = await Account.find({status: "admin"});
+
+    for(const admin of admins) {
+        if(admin.tgId == chatId) {
+            await Account.updateOne({tgId: +query}, {$set: {status: "cardAdmin"}});
+
+        }
+    }
+});
+
+
+
+
+
+bot.onText(/\/changeCard (.+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    let query = match[1];
+    const admins = await Account.find( {status: "admin"} );
+    const cardAdmins = await Account.find({status: "cardAdmin"});
+    // console.log(sdfskdjhdsfkj);
+    for(const admin of admins) {
+        if(admin.tgId == chatId) {
+            fs.writeFileSync("./cardNumber.txt", query);
+        }
+    }
+    for(const cardAdmin of cardAdmins) {
+        if(cardAdmin.tgId == chatId) {
+            fs.writeFileSync("./cardNumber.txt", query);
+        }
+    }
+});
 
 
 
@@ -109,14 +148,22 @@ bot.on("message", async (msg) => {
                 if(isNumber(query)) {
                     query = (+query) + getTwoRandNumbers();
                     if(query >= 6000) {
-                        const botMsg = await bot.sendMessage(chatId, `✅Заявка принята на оплату.\nПереведите на банковскую  карту ${query} рублей удобным для вас способом. \nВажно пополнить ровную сумму.\n`+
-                        `Номер карты - 2200700763972634\n‼️ у вас есть 30 мин на оплату, после чего платёж не будет зачислен\n‼️ перевёл неточную сумму - оплатил чужой заказ`, {
+                        let cardNumber = fs.readFileSync("./cardNumber.txt");
+                        cardNumber = cardNumber.toString();
+                        const botMsg = await bot.sendMessage(chatId, `✅ Заявка принята на оплату.\n\nПереведите на банковскую  карту ${query} рублей удобным для вас способом\n\n❗️ Важно пополнить ровную сумму ❗️\n`+
+                        `\n${cardNumber}\n\n❗️ У вас есть 30 мин на оплату, после чего платёж не будет зачислен ❗️\n\n⚠️ Перевёл неточную сумму - оплатил чужой заказ ⚠️`, {
                             reply_markup: JSON.stringify({
                                 inline_keyboard: [
                                     [ {text: "Оплатил", callback_data: "checkUserPayment|"+chatId+"|"+query} ]
-                                ] 
+                                ]
                             })
                         });
+                        bot.sendMessage(chatId, `❗️ ВЫДАННЫЕ РЕКВИЗИТЫ ДЕЙСТВУЮТ 30 МИНУТ\n`+
+                        `❗️ ПЕРЕВОДИТЕ ТОЧНУЮ СУММУ. НЕВЕРНАЯ СУММА НЕ БУДЕТ ЗАЧИСЛЕНА\n`+
+                        `❗️ ОПЛАТА ДОЛЖНА ПРОХОДИТЬ ОДНИМ ПЛАТЕЖОМ\n`+
+                        `❗️ ПРОБЛЕМЫ С ОПЛАТОЙ? ПЕРЕЙДИТЕ ПО ССЫЛКЕ : Payment(http://t.me/Polligato)\n`+
+                        `Предоставить чек об оплате и ID: ${chatId}\n`+
+                        `❗️ С ПРОБЛЕМНОЙ ЗАЯВКОЙ ОБРАЩАЙТЕСЬ НЕ ПОЗДНЕЕ 24 ЧАСОВ С МОМЕНТА ОПЛАТЫ`);
                         async function cancelMsg() {
                             await Account.updateOne( {tgId: chatId}, {$set: {isWaitForPay: "false"}} );
                             bot.editMessageText("Оплата не была проведена вовремя!", {
@@ -242,13 +289,14 @@ bot.on("callback_query", async (callbackQuery) => {
                     console.log(err.message);
                 }
             }
-            bot.editMessageText(`➡️ ПРОБЛЕМЫ С ОПЛАТОЙ? ПЕРЕЙДИТЕ ПО ССЫЛКЕ : Payment (http://t.me/Polligato)\n`+
-            `Предоставить чек об оплате и\n`+
-            `ID:  22216454\n`+
-            `➡️С ПРОБЛЕМНОЙ ЗАЯВКОЙ ОБРАЩАЙТЕСЬ НЕ ПОЗДНЕЕ 24 ЧАСОВ С МОМЕНТА ОПЛАТЫ.`, {
-                chat_id: chatId,
-                message_id: msg.message_id
-            });
+            
+            // bot.editMessageText(`➡️ ПРОБЛЕМЫ С ОПЛАТОЙ? ПЕРЕЙДИТЕ ПО ССЫЛКЕ : Payment (http://t.me/Polligato)\n`+
+            // `Предоставить чек об оплате и\n`+
+            // `ID:  22216454\n`+
+            // `➡️С ПРОБЛЕМНОЙ ЗАЯВКОЙ ОБРАЩАЙТЕСЬ НЕ ПОЗДНЕЕ 24 ЧАСОВ С МОМЕНТА ОПЛАТЫ.`, {
+            //     chat_id: chatId,
+            //     message_id: msg.message_id
+            // });
         }
         else {
             if (chosenEmoji === secretEmoji) {
@@ -293,7 +341,7 @@ botChecker.on("callback_query", async (callbackQuery) => {
                     chat_id: chatId,
                     message_id: msg.message_id
                 });
-                bot.sendMessage(userId, "Ваш платёж был откланён!");
+                bot.sendMessage(userId, "Ваш платёж был отклонён!");
             }
         }
         else {
@@ -356,7 +404,7 @@ botChecker.on("callback_query", async (callbackQuery) => {
                     chat_id: chatId,
                     message_id: msg.message_id
                 });
-                bot.sendMessage(userId, "Ваш платёж был откланён!");
+                bot.sendMessage(userId, "Ваш платёж был отклонён!");
             }
         }
         else {
