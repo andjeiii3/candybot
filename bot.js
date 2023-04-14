@@ -25,8 +25,7 @@ const bot = new TelegramBot(
 );
 
 const botChecker = new TelegramBot(
-    // "6224189211:AAGLhHrLe3ncWvL8BCfMi75DSUFW_hv0SZw",
-    "6116156409:AAGzqE38pLdprivSzC0NN3wGFyWvMt2FEEU",
+    "6224189211:AAGLhHrLe3ncWvL8BCfMi75DSUFW_hv0SZw",
     { polling: true }
 );
 
